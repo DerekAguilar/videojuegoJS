@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Videojuego - Lockstep en Javascript</title>
+    <style>
+        body {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            width:95vw;
+            height: 95vh;
+            background-color: #1B1B1B;
+            display: grid;
+            place-items: center;
+            color:lavenderblush;
+        }
+        .container {
+            width: 80%;
+            text-align: center;
+        }
+        .container * {
+            margin: 10px;
+        }
+        canvas { 
+            background-color: #f84898;
+            border:3px solid #ffc0cb;
+            box-shadow: 0px 0px 10px 10px #ffc0cb90;
+            border-radius: 2px;
+        }
+        button {
+            background-color:#f84898;
+            color:white;
+            height: 60px auto;
+            width: 100px auto;
+            padding:5px;
+            transition: 0.5s;
+            border:none;
+            border-radius:5px;
+            font-family:cursive;
+            font-size: large;
+        }
+        button:hover{
+            background-color: #E858A0;
+        }
+        button:active{
+            background-color: #d55093;
+        }
+        button:disabled{
+            background-color: silver;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lockstep en Javascript</h1>
+        <button type="button" id="start">Iniciar juego</button>
+        <div id="desc">
+            <h2>Objetivo:</h2>
+            <p>Marca el ritmo y, cuando la voz lo indique,</p>
+            <p>pasa a marcar los contratiempos.</p>
+            <p>¡Experimenta los dos lados del ritmo!</p>
+            <p>(Control: barra espaciadora)</p>
+        </div>
+        <p id="score"></p>
+        <canvas id="lienzo" width="384" height="512"></canvas>
+    </div>
+
+    <script src="./index.js"></script>
+      
+</body>
+</html>
