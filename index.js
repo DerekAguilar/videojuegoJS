@@ -12,11 +12,11 @@ stepswitcher_offbeat.src='./Img/Lockstep_Offbeat.png';
 var you_pointer=new Image(62,30);
 you_pointer.src='./Img/you.png';
 
-const screen=document.querySelector('#lienzo');
+const thisCanvas=document.querySelector('#lienzo');
 const btn=document.querySelector('#start');
 const showScore=document.querySelector('#score');
 const desc=document.querySelector('#desc');
-const ctx=screen.getContext('2d');
+const ctx=thisCanvas.getContext('2d');
 const rightBeats=[
     1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23,25, 27, 29, 31,
     32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64,
@@ -68,6 +68,19 @@ const offbeat_switch_call=[
     32,96,144,176,200,216,232,272,304,352
 ];
 
+const to_offbeat_bg=[
+    25,27,29,31,32,
+    89,91,93,95,96,
+    137,139,141,143,144,
+    169,171,173,175,176,
+    193,195,197,199,200,
+    209,211,213,215,216,
+    225,227,229,231,232,
+    265,267,269,271,272,
+    297,299,301,303,304,
+    345,347,349,351,352
+];
+
 const offbeat_call=[
     34,36,38,40,
     98,100,102,104,
@@ -107,17 +120,32 @@ const to_beat2_call=[
     382,384
 ];
 
+const to_beat_bg=[
+    61,62,63,64,65,
+    125,126,127,128,129,
+    157,158,159,160,161,
+    189,190,191,192,193,
+    205,206,207,208,209,
+    221,222,223,224,225,
+    245,246,247,248,249,
+    281,282,283,284,285,
+    313,314,315,316,317,
+    381,382,383,384,385
+];
+
 async function start(){
+    thisCanvas.style.backgroundColor='#f84898';
     showScore.innerHTML='Puntuación: '+score+'/'+rightBeats.length;
     desc.innerHTML='';
-    ctx.drawImage(stepswitcher_prev,168,240);
-    ctx.drawImage(stepswitcher_prev,112,240);
-    ctx.drawImage(stepswitcher_prev,224,240);
-    ctx.drawImage(you_pointer,175,225);
+    ctx.drawImage(stepswitcher_prev,144,224);
+    ctx.drawImage(stepswitcher_prev,48,224);
+    ctx.drawImage(stepswitcher_prev,240,224);
+    ctx.drawImage(you_pointer,162,193);
     setTimeout(function(){
         hasStarted=true;
-        ctx.clearRect(31,15,175,225);
-        ctx.drawImage(stepswitcher_idle,168,240);
+        let isBright=true;
+        ctx.clearRect(62,30,162,193);
+        ctx.drawImage(stepswitcher_idle,144,224);
         setInterval(function(){
             isBeat=!isBeat;
             steps++;
@@ -128,25 +156,46 @@ async function start(){
             if(to_beat1_call.includes(steps)) new Audio('./Lockstep/SFX_TO_BEAT_1.wav').play();
             if(to_beat2_call.includes(steps)) new Audio('./Lockstep/SFX_TO_BEAT_2.wav').play();
             hasScored=false;
+            
+            // Cambio de color de fondo
+            if(to_offbeat_bg.includes(steps)){
+                if(isBright){
+                    thisCanvas.style.backgroundColor='#D55093';
+                    isBright=false;
+                } else {
+                    thisCanvas.style.backgroundColor='#E858A0';
+                    isBright=true;
+                }
+            };
+
+            if(to_beat_bg.includes(steps)){
+                if(isBright){
+                    thisCanvas.style.backgroundColor='#D55093';
+                    isBright=false;
+                } else {
+                    thisCanvas.style.backgroundColor='#E858A0';
+                    isBright=true;
+                }
+            };
 
             // Otros personajes
             if(isBeat&&rightBeats.includes(steps)){
-                ctx.clearRect(112,240,48,64);
-                ctx.clearRect(224,240,48,64);
-                ctx.drawImage(stepswitcher_beat,112,240);
-                ctx.drawImage(stepswitcher_beat,224,240);
+                ctx.clearRect(48,224,96,128);
+                ctx.clearRect(240,224,96,128);
+                ctx.drawImage(stepswitcher_beat,48,224);
+                ctx.drawImage(stepswitcher_beat,240,224);
             }
             else if(!isBeat&&rightBeats.includes(steps)){
-                ctx.clearRect(112,240,48,64);
-                ctx.clearRect(224,240,48,64);
-                ctx.drawImage(stepswitcher_offbeat,112,240);
-                ctx.drawImage(stepswitcher_offbeat,224,240);
+                ctx.clearRect(48,224,96,128);
+                ctx.clearRect(240,224,96,128);
+                ctx.drawImage(stepswitcher_offbeat,48,224);
+                ctx.drawImage(stepswitcher_offbeat,240,224);
             }
             else{
-                ctx.clearRect(112,240,48,64);
-                ctx.clearRect(224,240,48,64);
-                ctx.drawImage(stepswitcher_idle,112,240);
-                ctx.drawImage(stepswitcher_idle,224,240);
+                ctx.clearRect(48,224,96,128);
+                ctx.clearRect(240,224,96,128);
+                ctx.drawImage(stepswitcher_idle,48,224);
+                ctx.drawImage(stepswitcher_idle,240,224);
             }
         },187);
 
@@ -155,21 +204,27 @@ async function start(){
             console.log(e.key);
             if(e.key===' '&&hasStarted){
                 if(isBeat){
-                    new Audio('./Lockstep/SFX_BEAT.wav').play();
-                    ctx.clearRect(168,240,50,128);
-                    ctx.drawImage(stepswitcher_beat,168,240);
+                    if(rightBeats.includes(steps)&&!hasScored||steps>416){
+                        new Audio('./Lockstep/SFX_BEAT.wav').play();
+                    }
+                    else new Audio('./Lockstep/SFX_MISTAKE.wav').play();
+                    ctx.clearRect(144,224,96,128);
+                    ctx.drawImage(stepswitcher_beat,144,224);
                     setTimeout(function(){
-                        ctx.clearRect(168,240,48,64);
-                        ctx.drawImage(stepswitcher_idle,168,240);
+                        ctx.clearRect(144,224,96,128);
+                        ctx.drawImage(stepswitcher_idle,144,224);
                     },187); 
                 }
                 else{
-                    new Audio('./Lockstep/SFX_OFFBEAT.mp3').play();
-                    ctx.clearRect(168,240,48,64);
-                    ctx.drawImage(stepswitcher_offbeat,168,240);
+                    if(rightBeats.includes(steps)&&!hasScored||steps>416){
+                        new Audio('./Lockstep/SFX_OFFBEAT.mp3').play();
+                    }
+                    else new Audio('./Lockstep/SFX_MISTAKE.wav').play();
+                    ctx.clearRect(144,224,96,128);
+                    ctx.drawImage(stepswitcher_offbeat,144,224);
                     setTimeout(function(){
-                        ctx.clearRect(168,240,48,64);
-                        ctx.drawImage(stepswitcher_idle,168,240);
+                        ctx.clearRect(144,224,96,128);
+                        ctx.drawImage(stepswitcher_idle,144,224);
                     },187);
                 }
             }
